@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import {getUser} from "../store/actions/mainActions";
 import {useRouter} from "next/router";
@@ -9,6 +9,7 @@ export default function Header() {
     const [username, setUsername] = useState('')
     const dispatch = useDispatch()
     const router = useRouter()
+    const {favorites} = useSelector(state => state.main)
 
     function searchUser() {
         if (username) {
@@ -24,13 +25,16 @@ export default function Header() {
                 <div className="header-inner">
                     {
                         router.pathname === '/favorites' ? (
-                           <Link href="/"><a className="favorites__link-back">Назад к поиску</a></Link>
+                            <>
+                                <Link href="/"><a className="favorites__link-back">Назад к поиску</a></Link>
+                                <h3 className="favorites__header-title">Amount: {favorites.length}</h3>
+                            </>
                         ) : (
                             <>
                                 <div className="search">
                                     <label htmlFor="search__input" className="search__label">Введите название канала</label>
                                     <input type="text" id="search__input" className="search__input" value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={handleKeyDown}/>
-                                    <button type="button" className="btn search__btn" onClick={() => searchUser()}>Найти</button>
+                                    <button type="button" className="btn search__btn" onClick={searchUser}>Найти</button>
                                 </div>
                                 <Link href={'/favorites'}>
                                     <a className="favorites">
